@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,22 @@ namespace StudentSample
 
             var connectionString = Configuration.GetConnectionString("DBConnectionString");
             services.AddDbContext<StudentContext>(options => options.UseSqlServer(connectionString));
+            
+          
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = "cookie";
+                    options.DefaultChallengeScheme = "oidc";
+                    
+                })
+                .AddCookie("cookie")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = "http://localhost:5000/";
+                    options.ClientId = "StudentMVC";
+                    options.SignInScheme = "cookie";
+                    options.RequireHttpsMetadata = false;
+                });
       
         }
 
@@ -44,6 +61,8 @@ namespace StudentSample
             }
 
             app.UseStaticFiles();
+           
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

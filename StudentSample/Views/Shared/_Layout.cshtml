@@ -34,6 +34,14 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="Students" asp-action="Index">Students</a></li>
+                    <li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form id="logout" asp-controller="Account" role="form" asp-action="Logout">
+                                <input type="submit" value="Logout" class="logout" />
+                            </form>
+                        }
+                    </li>
                 </ul>
             </div>
         </div>
